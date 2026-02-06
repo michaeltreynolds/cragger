@@ -72,8 +72,8 @@ async function runSetupChecks() {
         allGood: false
     };
 
-    // Calculate and display GitHub Pages URL
-    const currentUrl = window.location.origin;
+    // Calculate and display GitHub Pages URL (full URL with path)
+    const currentUrl = window.location.origin + window.location.pathname;
     if (githubPagesUrl) {
         githubPagesUrl.textContent = currentUrl;
     }
@@ -174,7 +174,7 @@ function updateCheckItem(element, status, icon, text) {
 // Copy URL to clipboard
 if (copyUrlBtn) {
     copyUrlBtn.addEventListener('click', async () => {
-        const url = githubPagesUrl ? githubPagesUrl.textContent : window.location.origin;
+        const url = githubPagesUrl ? githubPagesUrl.textContent : (window.location.origin + window.location.pathname);
         try {
             await navigator.clipboard.writeText(url);
             copyUrlBtn.textContent = '✅';
