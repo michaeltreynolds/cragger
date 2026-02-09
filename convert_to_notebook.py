@@ -32,10 +32,13 @@ def validate_python_syntax(code, filename="<code block>"):
 
 def create_markdown_cell(content):
     """Create a markdown cell"""
+    lines = content.split('\n')
+    # Jupyter requires each line (except the last) to end with \n
+    source = [line + '\n' for line in lines[:-1]] + [lines[-1]] if lines else []
     return {
         "cell_type": "markdown",
         "metadata": {},
-        "source": content.split('\n')
+        "source": source
     }
 
 def create_code_cell(content, is_form=False, filename="<code block>"):
@@ -50,12 +53,16 @@ def create_code_cell(content, is_form=False, filename="<code block>"):
     if is_form:
         metadata["cellView"] = "form"
     
+    lines = content.split('\n')
+    # Jupyter requires each line (except the last) to end with \n
+    source = [line + '\n' for line in lines[:-1]] + [lines[-1]] if lines else []
+    
     return {
         "cell_type": "code",
         "execution_count": None,
         "metadata": metadata,
         "outputs": [],
-        "source": content.split('\n')
+        "source": source
     }
 
 def parse_markdown_file(filepath):
