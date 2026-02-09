@@ -7,11 +7,11 @@
 const SUPABASE_CONFIG = {
     // TODO: Replace with your Supabase project URL
     // Example: 'https://xyzcompany.supabase.co'
-    url: 'YOUR_SUPABASE_URL_HERE',
+    url: 'https://ebmgbfsjelwaglysbqym.supabase.co',
 
     // TODO: Replace with your Supabase anon/public key
     // This is safe to expose in client-side code when using RLS
-    anonKey: 'YOUR_SUPABASE_ANON_KEY_HERE'
+    anonKey: 'sb_publishable_wdeYV7W3ywQTHo9ZJK8x6g_WCwrfTUE'
 };
 
 // Validate configuration
