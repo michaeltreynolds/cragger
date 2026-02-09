@@ -9,8 +9,9 @@ Edge Functions let us call OpenAI's API server-side, keeping our API keys secret
 ```python
 # @title 📦 Install Supabase CLI
 
-# Install Node.js tools (already available in Colab)
-!npm install -g supabase@latest
+# Download and install the Supabase CLI binary directly
+!curl -sSL "https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz" -o /tmp/supabase.tar.gz
+!tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin supabase
 
 # Verify installation
 !supabase --version
