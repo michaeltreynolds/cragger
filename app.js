@@ -307,10 +307,10 @@ function showLoading(show) {
 async function checkSearchReadiness() {
     if (!supabaseClient) return;
 
-    // Check 1: Does the talks table have data? (keyword search)
+    // Check 1: Does the sentence_embeddings table have data? (keyword search)
     try {
         const { count, error } = await supabaseClient
-            .from('talks')
+            .from('sentence_embeddings')
             .select('*', { count: 'exact', head: true });
 
         if (!error && count > 0) {
@@ -323,10 +323,10 @@ async function checkSearchReadiness() {
         setSearchReady('keyword', false);
     }
 
-    // Check 2: Do sentences have embeddings? (semantic search)
+    // Check 2: Do sentence_embeddings have embeddings? (semantic search)
     try {
         const { data, error } = await supabaseClient
-            .from('sentences')
+            .from('sentence_embeddings')
             .select('embedding')
             .not('embedding', 'is', null)
             .limit(1);
@@ -346,6 +346,7 @@ async function checkSearchReadiness() {
                 });
                 setSearchReady('semantic', response.ok);
             } catch {
+                // CORS error or network error means function isn't deployed
                 setSearchReady('semantic', false);
             }
         } else {
@@ -369,6 +370,7 @@ async function checkSearchReadiness() {
         // Even an error response (like 400) from the function means it's deployed
         setSearchReady('rag', response.status !== 404);
     } catch {
+        // CORS error or network error means function isn't deployed
         setSearchReady('rag', false);
     }
 }
@@ -415,17 +417,10 @@ async function keywordSearch() {
     clearResults('keyword');
 
     try {
-        // Search sentences that contain the keyword (case-insensitive)
+        // Search sentence_embeddings that contain the keyword (case-insensitive)
         const { data, error } = await supabaseClient
-            .from('sentences')
-            .select(`
-                text,
-                talk_id,
-                talks (
-                    title,
-                    speaker
-                )
-            `)
+            .from('sentence_embeddings')
+            .select('text, talk_id, title, speaker')
             .ilike('text', `%${query}%`)
             .limit(20);
 
@@ -442,8 +437,8 @@ async function keywordSearch() {
             const talkId = row.talk_id;
             if (!talks[talkId]) {
                 talks[talkId] = {
-                    title: row.talks?.title || 'Unknown Talk',
-                    speaker: row.talks?.speaker || 'Unknown Speaker',
+                    title: row.title || 'Unknown Talk',
+                    speaker: row.speaker || 'Unknown Speaker',
                     sentences: []
                 };
             }
