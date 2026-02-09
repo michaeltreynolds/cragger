@@ -1,24 +1,31 @@
 # Conference RAG
 
-A production-ready Retrieval Augmented Generation (RAG) application that lets users ask questions about General Conference talks using semantic search and AI-generated answers.
+A Retrieval Augmented Generation (RAG) application that lets users ask questions about General Conference talks using semantic search and AI-generated answers.
 
-## 🚀 Features
+## 🚀 Quick Start
 
-- ✅ **Supabase Authentication** — Magic link login
-- ✅ **Vector Search** — Semantic search with pgvector
-- ✅ **Edge Functions** — Server-side OpenAI API calls (keys never exposed)
-- ✅ **Row Level Security** — Database-level access control
-- ✅ **GitHub Pages** — Free, automatic deployment
+### 1. Fork this repo
 
-## 📋 Setup
+Click **"Fork"** in the top right → **"Create fork"**
 
-### Google Colab Notebook (Recommended) ⭐
+> Make sure your fork is **public** (required for free GitHub Pages hosting & Colab).
 
-The setup notebook walks you through every step:
+### 2. Deploy to GitHub Pages
 
-1. Upload `setup.ipynb` to [Google Colab](https://colab.research.google.com/)
-2. Follow the guided steps (~85 minutes)
-3. Your RAG app will be live on GitHub Pages!
+In your fork: **Settings** → **Pages** → Source: **Deploy from a branch** → Branch: **main**, Folder: **/ (root)** → **Save**
+
+Your site will be live at: `https://YOUR-USERNAME.github.io/conference-rag/`
+
+### 3. Open the Setup Notebook
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/byu-cs-452/conference-rag/blob/main/setup.ipynb)
+
+The notebook walks you through every step (~85 minutes):
+- Configure Supabase credentials
+- Set up the database schema
+- Deploy Edge Functions
+- Import & embed conference data
+- Test all three search modes
 
 **Prerequisites:**
 - [Supabase](https://supabase.com) account (free tier)
@@ -50,6 +57,16 @@ The setup notebook walks you through every step:
                  ↓ Returns final answer
 ```
 
+## 🔍 Three Search Modes
+
+The app features three search capabilities that "light up" as you complete each section of the notebook:
+
+| Mode | What it does | Requires |
+|------|-------------|----------|
+| **🔍 Keyword Search** | SQL `ILIKE` query on talk text | Conference data imported |
+| **🧠 Semantic Search** | Vector similarity with pgvector | Embeddings + `embed-question` Edge Function |
+| **🤖 Ask a Question (RAG)** | AI-generated answers with sources | All Edge Functions deployed |
+
 ## 📚 Learning Objectives
 
 1. **Vector Embeddings** — Representing text as searchable numbers
@@ -73,31 +90,29 @@ The setup notebook walks you through every step:
 ```
 conference-rag/
 ├── index.html              # Main application UI
-├── app.js                  # Authentication + RAG logic
+├── app.js                  # Three search modes + auth logic
 ├── styles.css              # Dark theme styling
 ├── config.js               # Supabase credentials (you edit this)
-├── database-setup.sql      # Schema reference
 ├── setup.ipynb             # Setup notebook (run in Colab)
 ├── notebook_content/       # Markdown sources for notebook
 │   ├── 00_welcome.md
 │   ├── ...
 │   └── 09_reflection.md
 ├── convert_to_notebook.py  # Regenerate setup.ipynb from markdown
-└── .github/workflows/
-    └── deploy.yml          # Auto-deploy to GitHub Pages
+└── .nojekyll               # Tells GitHub Pages not to use Jekyll
 ```
 
 ## 🎓 Assignment Deliverables
 
-1. GitHub repository URL
+1. GitHub repository URL (your fork)
 2. Live deployment URL (GitHub Pages)
 3. Screenshot of a working query + answer
 4. Brief reflection on embedding strategies
 
 ## ⚠️ Important Notes
 
-- Update `config.js` with your Supabase credentials before deploying
-- Deploy Edge Functions before testing (the notebook handles this)
+- Update `config.js` with your Supabase credentials before testing
+- Deploy Edge Functions before testing semantic search & RAG
 - Add your GitHub Pages URL to Supabase redirect URLs
 - Never commit real API keys to public repositories
 
@@ -107,6 +122,8 @@ conference-rag/
 |-------|----------|
 | "Please configure Supabase" | Update `config.js` with your project URL and anon key |
 | Magic link not working | Add your site URL to Supabase → Authentication → URL Configuration |
+| Changes don't appear | Hard refresh (Ctrl+Shift+R) or try incognito window |
+| Search shows "Not Ready" | Complete the corresponding notebook section first |
 | "Failed to get embedding" | Deploy Edge Functions (see notebook Part 5) |
 | "Database search failed" | Run the database schema SQL (see notebook Part 3) |
 | No search results | Import data first (see notebook Parts 6-7) |

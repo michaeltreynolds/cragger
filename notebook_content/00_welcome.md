@@ -1,15 +1,25 @@
 # 🎓 Conference RAG - Complete Setup Guide
 
-Welcome! In this notebook, you'll build a **production-ready Retrieval Augmented Generation (RAG) application** that lets users ask questions about conference talks using semantic search and AI-generated answers.
+Welcome! In this notebook, you'll build a **Retrieval Augmented Generation (RAG) application** that lets users ask questions about conference talks using semantic search and AI-generated answers.
 
 ## What You'll Build
 
-A full-stack web application with:
-- ✅ User authentication (Supabase magic links)
-- ✅ Vector embeddings & semantic search (pgvector)
-- ✅ Server-side API key management (Edge Functions)
-- ✅ Row Level Security (RLS)
-- ✅ Deployed on GitHub Pages
+A web application with three progressively unlocked search modes:
+
+1. **🔍 Keyword Search** — Find talks by keyword (SQL queries via Supabase)
+2. **🧠 Semantic Search** — Find similar content by meaning (vector embeddings + pgvector)
+3. **🤖 Ask a Question (RAG)** — Get AI-generated answers with sources (full RAG pipeline)
+
+## How It Works
+
+As you complete each section of this notebook, a search mode will "light up" on your deployed site:
+
+| You complete... | This unlocks... |
+|----------------|-----------------|
+| Parts 1-4: Fork repo, deploy site, configure Supabase | Login works, but all searches show "Not Ready" |
+| Parts 5-6: Import conference data | 🔍 **Keyword Search** turns green |
+| Part 7: Generate embeddings + deploy `embed-question` | 🧠 **Semantic Search** turns green |
+| Part 8: Deploy `generate-answer` Edge Function | 🤖 **Ask a Question** turns green |
 
 ## Architecture
 
