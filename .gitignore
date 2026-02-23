@@ -39,3 +39,6 @@ supabase/.temp/
 # Python
 __pycache__/
 *.pyc
+
+*.secret.json
+config.secret.json
