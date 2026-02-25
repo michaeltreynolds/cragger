@@ -165,6 +165,7 @@ def scrape_talks():
             response.raise_for_status()
         except:
             return []
+        response.encoding = 'utf-8'
         soup = BeautifulSoup(response.text, 'html.parser')
         talk_urls = []
         seen = set()
@@ -191,6 +192,7 @@ def scrape_talks():
             response.raise_for_status()
         except:
             return None
+        response.encoding = 'utf-8'
         soup = BeautifulSoup(response.text, 'html.parser')
         title = soup.find("h1").text.strip() if soup.find("h1") else "No Title"
         speaker_tag = soup.find("p", {"class": "author-name"})

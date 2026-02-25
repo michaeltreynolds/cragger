@@ -325,6 +325,8 @@ async function checkSearchReadiness() {
     }
 
     // Check 2: Do sentence_embeddings have embeddings? (semantic search)
+    // RAG also depends on this, so we track it
+    let semanticReady = false;
     try {
         const { data, error } = await supabaseClient
             .from('sentence_embeddings')
@@ -340,7 +342,8 @@ async function checkSearchReadiness() {
                 const { data, error: fnError } = await supabaseClient.functions.invoke('embed-question', {
                     body: { question: 'test' }
                 });
-                setSearchReady('semantic', !fnError);
+                semanticReady = !fnError;
+                setSearchReady('semantic', semanticReady);
             } catch {
                 // CORS error or network error means function isn't deployed
                 setSearchReady('semantic', false);
@@ -354,15 +357,20 @@ async function checkSearchReadiness() {
     }
 
     // Check 3: Does generate-answer edge function respond? (RAG)
-    try {
-        const { data, error: fnError } = await supabaseClient.functions.invoke('generate-answer', {
-            body: { question: 'test', context_talks: [] }
-        });
-        // Even an error response from the function means it's deployed
-        setSearchReady('rag', !fnError || fnError.context?.status !== 404);
-    } catch {
-        // CORS error or network error means function isn't deployed
+    // RAG needs both the semantic pipeline (embeddings + embed-question) AND generate-answer
+    if (!semanticReady) {
         setSearchReady('rag', false);
+    } else {
+        try {
+            const { data, error: fnError } = await supabaseClient.functions.invoke('generate-answer', {
+                body: { question: 'test', context_talks: [] }
+            });
+            // Even an error response from the function means it's deployed
+            setSearchReady('rag', !fnError || fnError.context?.status !== 404);
+        } catch {
+            // CORS error or network error means function isn't deployed
+            setSearchReady('rag', false);
+        }
     }
 }
 
