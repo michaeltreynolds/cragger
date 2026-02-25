@@ -1,3 +1,24 @@
+# =============================================================================
+# Edge Function Configuration
+# =============================================================================
+#
+# IMPORTANT: verify_jwt is disabled because Supabase's API gateway cannot
+# verify ES256 (asymmetric) JWTs, which are now the default for Supabase Auth.
+# The gateway still only supports HS256 (symmetric) verification.
+#
+# This is a known issue during Supabase's transition from HS256 to ES256:
+#   - https://github.com/supabase/supabase/issues/32364
+#   - https://github.com/supabase/supabase/issues/31987
+#
+# Instead of gateway verification, each function manually verifies the user
+# via supabase.auth.getUser() in _shared/auth.ts. This approach is also
+# Supabase's recommended long-term pattern for Edge Function auth:
+#   - https://supabase.com/docs/guides/functions/auth
+#
+# The legacy HS256 keys are expected to be fully deprecated by late 2026,
+# at which point gateway ES256 verification should be working.
+# =============================================================================
+
 [functions.embed-question]
 verify_jwt = false
 
