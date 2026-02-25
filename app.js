@@ -305,72 +305,59 @@ function showLoading(show) {
 // SEARCH READINESS DETECTION
 // ============================================
 
-async function checkSearchReadiness() {
-    if (!supabaseClient) return;
+// Guard against double execution (checkSession + onAuthStateChange both call showApp)
+let readinessCheckRunning = false;
 
-    // Check 1: Does the sentence_embeddings table have data? (keyword search)
+async function checkSearchReadiness() {
+    if (!supabaseClient || readinessCheckRunning) return;
+    readinessCheckRunning = true;
+
     try {
+        // --- 1 DB query: count rows with embeddings ---
+        // If count > 0 → data exists (keyword ✅) AND embeddings exist (semantic DB prereq ✅)
+        // If count === 0 → pipeline incomplete → all panels not ready
         const { count, error } = await supabaseClient
             .from('sentence_embeddings')
-            .select('*', { count: 'exact', head: true });
+            .select('*', { count: 'exact', head: true })
+            .not('embedding', 'is', null);
 
-        if (!error && count > 0) {
-            setSearchReady('keyword', true);
-        } else {
-            setSearchReady('keyword', false);
-        }
-    } catch (err) {
-        console.log('Keyword readiness check failed:', err.message);
-        setSearchReady('keyword', false);
-    }
+        const hasEmbeddings = !error && count > 0;
+        setSearchReady('keyword', hasEmbeddings);
 
-    // Check 2: Do sentence_embeddings have embeddings? (semantic search)
-    // RAG also depends on this, so we track it
-    let semanticReady = false;
-    try {
-        const { data, error } = await supabaseClient
-            .from('sentence_embeddings')
-            .select('embedding')
-            .not('embedding', 'is', null)
-            .limit(1);
-
-        const hasEmbeddings = !error && data && data.length > 0;
-
+        // --- 1 embed-question call (only if DB has embeddings) ---
+        let semanticReady = false;
         if (hasEmbeddings) {
-            // Also check if embed-question edge function responds
             try {
                 const { data, error: fnError } = await supabaseClient.functions.invoke('embed-question', {
                     body: { question: 'test' }
                 });
                 semanticReady = !fnError;
-                setSearchReady('semantic', semanticReady);
             } catch {
-                // CORS error or network error means function isn't deployed
-                setSearchReady('semantic', false);
+                // CORS or network error → function not deployed
             }
+        }
+        setSearchReady('semantic', semanticReady);
+
+        // --- 1 generate-answer call (only if semantic pipeline is ready) ---
+        if (!semanticReady) {
+            setSearchReady('rag', false);
         } else {
-            setSearchReady('semantic', false);
+            try {
+                const { data, error: fnError } = await supabaseClient.functions.invoke('generate-answer', {
+                    body: { question: 'test', context_talks: [] }
+                });
+                setSearchReady('rag', !fnError || fnError.context?.status !== 404);
+            } catch {
+                setSearchReady('rag', false);
+            }
         }
     } catch (err) {
-        console.log('Semantic readiness check failed:', err.message);
+        console.log('Readiness check failed:', err.message);
+        setSearchReady('keyword', false);
         setSearchReady('semantic', false);
-    }
-
-    // Check 3: Does generate-answer edge function respond? (RAG)
-    // RAG needs both the semantic pipeline (embeddings + embed-question) AND generate-answer
-    if (!semanticReady) {
         setSearchReady('rag', false);
-    } else {
-        try {
-            const { data, error: fnError } = await supabaseClient.functions.invoke('generate-answer', {
-                body: { question: 'test', context_talks: [] }
-            });
-            // Even an error response from the function means it's deployed
-            setSearchReady('rag', !fnError || fnError.context?.status !== 404);
-        } catch {
-            // CORS error or network error means function isn't deployed
-            setSearchReady('rag', false);
-        }
+    } finally {
+        readinessCheckRunning = false;
     }
 }
 
