@@ -56,6 +56,14 @@ body {
     display: none !important;
 }
 
+.deploy-info {
+    text-align: right;
+    padding: 0.25rem var(--spacing-sm);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;

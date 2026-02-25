@@ -665,8 +665,34 @@ if (ragInput) ragInput.addEventListener('keypress', (e) => {
 });
 
 // ============================================
+// DEPLOY TIMESTAMP
+// ============================================
+
+function fetchDeployTimestamp() {
+    const deployDateEl = document.getElementById('deploy-date');
+    if (!deployDateEl) return;
+
+    fetch(window.location.href, { method: 'HEAD' })
+        .then(r => {
+            const lastModified = r.headers.get('Last-Modified');
+            if (lastModified) {
+                const date = new Date(lastModified);
+                deployDateEl.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            } else {
+                deployDateEl.textContent = 'unknown';
+            }
+        })
+        .catch(() => {
+            deployDateEl.textContent = 'unknown';
+        });
+}
+
+// ============================================
 // INITIALIZE APP
 // ============================================
+
+// Fetch deploy timestamp
+fetchDeployTimestamp();
 
 // Run setup checks on page load
 runSetupChecks();
