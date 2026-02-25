@@ -35,13 +35,6 @@ if (configIsValid) {
 }
 
 
-// Helper: get current user's access token (JWT) for Edge Function calls
-async function getAccessToken() {
-    if (!supabaseClient) return null;
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    return session?.access_token || null;
-}
-
 // DOM Elements
 const loginScreen = document.getElementById('login-screen');
 const appScreen = document.getElementById('app-screen');
@@ -344,16 +337,10 @@ async function checkSearchReadiness() {
         if (hasEmbeddings) {
             // Also check if embed-question edge function responds
             try {
-                const token = await getAccessToken();
-                const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/embed-question`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ question: 'test' })
+                const { data, error: fnError } = await supabaseClient.functions.invoke('embed-question', {
+                    body: { question: 'test' }
                 });
-                setSearchReady('semantic', response.ok);
+                setSearchReady('semantic', !fnError);
             } catch {
                 // CORS error or network error means function isn't deployed
                 setSearchReady('semantic', false);
@@ -368,17 +355,11 @@ async function checkSearchReadiness() {
 
     // Check 3: Does generate-answer edge function respond? (RAG)
     try {
-        const ragToken = await getAccessToken();
-        const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/generate-answer`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${ragToken}`
-            },
-            body: JSON.stringify({ question: 'test', context_talks: [] })
+        const { data, error: fnError } = await supabaseClient.functions.invoke('generate-answer', {
+            body: { question: 'test', context_talks: [] }
         });
-        // Even an error response (like 400) from the function means it's deployed
-        setSearchReady('rag', response.status !== 404);
+        // Even an error response from the function means it's deployed
+        setSearchReady('rag', !fnError || fnError.context?.status !== 404);
     } catch {
         // CORS error or network error means function isn't deployed
         setSearchReady('rag', false);
@@ -573,22 +554,14 @@ async function askQuestion() {
 
 // Get embedding via Edge Function
 async function getEmbedding(text) {
-    const token = await getAccessToken();
-    const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/embed-question`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ question: text })
+    const { data, error } = await supabaseClient.functions.invoke('embed-question', {
+        body: { question: text }
     });
 
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to get embedding');
+    if (error) {
+        throw new Error(data?.error || 'Failed to get embedding');
     }
 
-    const data = await response.json();
     return data.embedding;
 }
 
@@ -635,25 +608,17 @@ function groupByTalk(sentences) {
 
 // Generate answer via Edge Function
 async function generateAnswer(question, contextTalks) {
-    const token = await getAccessToken();
-    const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/generate-answer`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
+    const { data, error } = await supabaseClient.functions.invoke('generate-answer', {
+        body: {
             question: question,
             context_talks: contextTalks
-        })
+        }
     });
 
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to generate answer');
+    if (error) {
+        throw new Error(data?.error || 'Failed to generate answer');
     }
 
-    const data = await response.json();
     return data.answer;
 }
 
