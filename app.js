@@ -34,6 +34,7 @@ if (configIsValid) {
     }
 }
 
+
 // Helper: get current user's access token (JWT) for Edge Function calls
 async function getAccessToken() {
     if (!supabaseClient) return null;
@@ -348,7 +349,7 @@ async function checkSearchReadiness() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ question: 'test' })
                 });
@@ -372,7 +373,7 @@ async function checkSearchReadiness() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                ...(ragToken ? { 'Authorization': `Bearer ${ragToken}` } : {})
+                'Authorization': `Bearer ${ragToken}`
             },
             body: JSON.stringify({ question: 'test', context_talks: [] })
         });
@@ -577,7 +578,7 @@ async function getEmbedding(text) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ question: text })
     });
@@ -639,7 +640,7 @@ async function generateAnswer(question, contextTalks) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
             question: question,
