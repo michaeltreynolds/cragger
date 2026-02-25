@@ -34,6 +34,13 @@ if (configIsValid) {
     }
 }
 
+// Helper: get current user's access token (JWT) for Edge Function calls
+async function getAccessToken() {
+    if (!supabaseClient) return null;
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    return session?.access_token || null;
+}
+
 // DOM Elements
 const loginScreen = document.getElementById('login-screen');
 const appScreen = document.getElementById('app-screen');
@@ -336,11 +343,12 @@ async function checkSearchReadiness() {
         if (hasEmbeddings) {
             // Also check if embed-question edge function responds
             try {
+                const token = await getAccessToken();
                 const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/embed-question`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                     },
                     body: JSON.stringify({ question: 'test' })
                 });
@@ -359,11 +367,12 @@ async function checkSearchReadiness() {
 
     // Check 3: Does generate-answer edge function respond? (RAG)
     try {
+        const ragToken = await getAccessToken();
         const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/generate-answer`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+                ...(ragToken ? { 'Authorization': `Bearer ${ragToken}` } : {})
             },
             body: JSON.stringify({ question: 'test', context_talks: [] })
         });
@@ -563,11 +572,12 @@ async function askQuestion() {
 
 // Get embedding via Edge Function
 async function getEmbedding(text) {
+    const token = await getAccessToken();
     const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/embed-question`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
         body: JSON.stringify({ question: text })
     });
@@ -624,11 +634,12 @@ function groupByTalk(sentences) {
 
 // Generate answer via Edge Function
 async function generateAnswer(question, contextTalks) {
+    const token = await getAccessToken();
     const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/generate-answer`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
             question: question,
