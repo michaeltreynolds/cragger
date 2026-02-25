@@ -62,6 +62,8 @@ This assignment is designed to be completed with an AI coding assistant. We reco
 
 Use your assistant to explain concepts, debug errors, and help write code.
 
+Your AI assistant will automatically read [`ai_agent_instructions.md`](ai_agent_instructions.md) to understand the assignment's learning objectives and teach you along the way.
+
 ## 🏗️ Architecture
 
 ```

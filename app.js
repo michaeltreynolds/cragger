@@ -764,11 +764,49 @@ function fetchDeployTimestamp() {
 }
 
 // ============================================
+// PAGE VIEW COUNTER
+// ============================================
+// Demonstrates public RLS policies: this works without authentication
+// because page_views has anon INSERT + SELECT policies.
+
+function recordPageView() {
+    if (!supabaseClient) return;
+
+    const pageViewsEl = document.getElementById('page-views-count');
+
+    // Insert a page view (best-effort, no auth required)
+    supabaseClient
+        .from('page_views')
+        .insert({
+            page_url: window.location.href,
+            user_agent: navigator.userAgent
+        })
+        .then(() => {
+            // Query the total count
+            return supabaseClient
+                .from('page_views')
+                .select('*', { count: 'exact', head: true });
+        })
+        .then(({ count }) => {
+            if (pageViewsEl && count != null) {
+                pageViewsEl.textContent = count.toLocaleString();
+            }
+        })
+        .catch(() => {
+            // Silently fail — table might not exist yet
+            if (pageViewsEl) pageViewsEl.textContent = '—';
+        });
+}
+
+// ============================================
 // INITIALIZE APP
 // ============================================
 
 // Fetch deploy timestamp
 fetchDeployTimestamp();
+
+// Record page view and show counter
+recordPageView();
 
 // Run setup checks on page load
 runSetupChecks();
