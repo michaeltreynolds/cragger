@@ -1,11 +1,16 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { corsHeaders } from "../_shared/cors.ts";
+import { requireAuth } from "../_shared/auth.ts";
 
 Deno.serve(async (req) => {
     // Handle CORS preflight
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
     }
+
+    // Verify authenticated user
+    const authResult = await requireAuth(req);
+    if ("error" in authResult) return authResult.error;
 
     try {
         const { question } = await req.json();
