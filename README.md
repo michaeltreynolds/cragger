@@ -2,35 +2,65 @@
 
 A Retrieval Augmented Generation (RAG) application that lets users ask questions about General Conference talks using semantic search and AI-generated answers.
 
+**Live Demo**: [https://michaeltreynolds.github.io/cragger/](https://michaeltreynolds.github.io/cragger/)
+
 ## 🚀 Quick Start
 
-### 1. Fork this repo
+### 1. Fork & Clone
 
-Click **"Fork"** in the top right → **"Create fork"**
+```bash
+# Fork this repo on GitHub, then:
+git clone https://github.com/YOUR-USERNAME/conference-rag.git
+cd conference-rag
+```
 
-> Make sure your fork is **public** (required for free GitHub Pages hosting & Colab).
+### 2. Set Up Python Environment
 
-### 2. Deploy to GitHub Pages
+```bash
+python -m venv .venv
 
-In your fork: **Settings** → **Pages** → Source: **Deploy from a branch** → Branch: **main**, Folder: **/ (root)** → **Save**
+# Activate:
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
 
-Your site will be live at: `https://YOUR-USERNAME.github.io/conference-rag/`
+pip install -r requirements.txt
+```
 
-### 3. Open the Setup Notebook
+### 3. Follow the Step Guides
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/byu-cs-452/conference-rag/blob/main/setup.ipynb)
+The `steps/` folder walks you through everything:
 
-The notebook walks you through every step (~85 minutes):
-- Configure Supabase credentials
-- Set up the database schema
-- Deploy Edge Functions
-- Import & embed conference data
-- Test all three search modes
+| Step | Topic | Time |
+|------|-------|------|
+| [00](steps/00_overview.md) | Overview & Environment Setup | 15 min |
+| [01](steps/01_fork_and_setup.md) | Fork Repo & Install Dependencies | 10 min |
+| [02](steps/02_supabase_project.md) | Create Supabase Project | 10 min |
+| [03](steps/03_database_schema.md) | Create Database Schema | 10 min |
+| [04](steps/04_deploy_frontend.md) | Deploy to GitHub Pages | 15 min |
+| [05](steps/05_edge_functions.md) | Deploy Edge Functions | 15 min |
+| [06](steps/06_scrape_data.md) | Scrape Conference Talks | 10 min |
+| [07](steps/07_embed_and_import.md) | Generate Embeddings & Import | 20 min |
+| [08](steps/08_testing.md) | Test the System | 10 min |
+| [09](steps/09_reflection.md) | Reflection & Deliverables | 10 min |
 
 **Prerequisites:**
 - [Supabase](https://supabase.com) account (free tier)
 - [GitHub](https://github.com) account
 - [OpenAI API key](https://platform.openai.com/api-keys) (~$0.60 usage)
+- Python 3.9+
+- An AI coding assistant (Antigravity, GitHub Copilot, or Cursor)
+
+## 🤖 AI-Assisted Development
+
+This assignment is designed to be completed with an AI coding assistant. We recommend:
+
+- **[Antigravity](https://marketplace.visualstudio.com/items?itemName=AntimatterResearch.antigravity)** — VS Code extension
+- **[GitHub Copilot](https://github.com/features/copilot)** — VS Code extension  
+- **[Cursor](https://cursor.com)** — Standalone AI-first IDE
+
+Use your assistant to explain concepts, debug errors, and help write code.
 
 ## 🏗️ Architecture
 
@@ -50,16 +80,13 @@ The notebook walks you through every step (~85 minutes):
        ├─── Supabase Database (pgvector)
        │         ↓ match_sentences()
        │         ↓ Returns similar sentences
-       │         ↓ Grouped by talk, ranked
        │
        └─── Edge Function: generate-answer
-                 ↓ GPT-4o-mini (server-side 🔒)
-                 ↓ Returns final answer
+                ↓ GPT-4o (server-side 🔒)
+                ↓ Returns final answer
 ```
 
 ## 🔍 Three Search Modes
-
-The app features three search capabilities that "light up" as you complete each section of the notebook:
 
 | Mode | What it does | Requires |
 |------|-------------|----------|
@@ -67,14 +94,34 @@ The app features three search capabilities that "light up" as you complete each 
 | **🧠 Semantic Search** | Vector similarity with pgvector | Embeddings + `embed-question` Edge Function |
 | **🤖 Ask a Question (RAG)** | AI-generated answers with sources | All Edge Functions deployed |
 
-## 📚 Learning Objectives
+## 📁 Project Structure
 
-1. **Vector Embeddings** — Representing text as searchable numbers
-2. **Semantic Search** — Finding similar content with cosine similarity
-3. **RAG Architecture** — Combining retrieval + generation
-4. **Edge Functions** — Serverless compute for secure API management
-5. **Row Level Security** — User-level data access control
-6. **Production Deployment** — Full-stack app on GitHub Pages
+```
+conference-rag/
+├── index.html                  # Main application UI
+├── app.js                      # Three search modes + auth logic
+├── styles.css                  # Dark theme styling
+├── config.js                   # Supabase credentials (you edit this)
+├── config.secret.json          # API keys & secrets (git-ignored)
+├── config.secret.example.json  # Template for config.secret.json
+├── requirements.txt            # Python dependencies
+├── .nojekyll                   # Tells GitHub Pages not to use Jekyll
+├── steps/                      # Step-by-step assignment guides
+│   ├── 00_overview.md
+│   ├── ...
+│   └── 09_reflection.md
+├── scripts/                    # Pipeline scripts (run in order)
+│   ├── 01_create_schema.py     # Create DB schema
+│   ├── 02_scrape_data.py       # Scrape conference talks → data/talks.json
+│   ├── 03_embed_data.py        # Generate embeddings → data/sentences_with_embeddings.json
+│   └── 04_import_data.py       # Import to Supabase
+├── data/                       # Intermediate data (git-ignored)
+└── supabase/
+    └── functions/              # Edge Functions (deployed to Supabase)
+        ├── _shared/            # Shared auth & CORS helpers
+        ├── embed-question/     # Converts questions to embeddings
+        └── generate-answer/    # Generates AI answers
+```
 
 ## 🔒 Security Model
 
@@ -85,36 +132,21 @@ The app features three search capabilities that "light up" as you complete each 
 | Database access | Row Level Security policies |
 | Transport | HTTPS enforced by GitHub Pages |
 
-## 📁 Project Structure
+## 📚 Learning Objectives
 
-```
-conference-rag/
-├── index.html              # Main application UI
-├── app.js                  # Three search modes + auth logic
-├── styles.css              # Dark theme styling
-├── config.js               # Supabase credentials (you edit this)
-├── setup.ipynb             # Setup notebook (run in Colab)
-├── notebook_content/       # Markdown sources for notebook
-│   ├── 00_welcome.md
-│   ├── ...
-│   └── 09_reflection.md
-├── convert_to_notebook.py  # Regenerate setup.ipynb from markdown
-└── .nojekyll               # Tells GitHub Pages not to use Jekyll
-```
+1. **Vector Embeddings** — Representing text as searchable numbers
+2. **Semantic Search** — Finding similar content with cosine similarity
+3. **RAG Architecture** — Combining retrieval + generation
+4. **Edge Functions** — Serverless compute for secure API management
+5. **Row Level Security** — User-level data access control
+6. **Production Deployment** — Full-stack app on GitHub Pages
 
 ## 🎓 Assignment Deliverables
 
 1. GitHub repository URL (your fork)
 2. Live deployment URL (GitHub Pages)
 3. Screenshot of a working query + answer
-4. Brief reflection on embedding strategies
-
-## ⚠️ Important Notes
-
-- Update `config.js` with your Supabase credentials before testing
-- Deploy Edge Functions before testing semantic search & RAG
-- Add your GitHub Pages URL to Supabase redirect URLs
-- Never commit real API keys to public repositories
+4. Written reflection on embedding strategies and AI-assisted development
 
 ## 🆘 Troubleshooting
 
@@ -123,10 +155,10 @@ conference-rag/
 | "Please configure Supabase" | Update `config.js` with your project URL and anon key |
 | Magic link not working | Add your site URL to Supabase → Authentication → URL Configuration |
 | Changes don't appear | Hard refresh (Ctrl+Shift+R) or try incognito window |
-| Search shows "Not Ready" | Complete the corresponding notebook section first |
-| "Failed to get embedding" | Deploy Edge Functions (see notebook Part 5) |
-| "Database search failed" | Run the database schema SQL (see notebook Part 3) |
-| No search results | Import data first (see notebook Parts 6-7) |
+| Search shows "Not Ready" | Complete the corresponding step first |
+| "Failed to get embedding" | Deploy Edge Functions and set OPENAI_API_KEY secret |
+| "Database search failed" | Run `scripts/01_create_schema.py` |
+| No search results | Import data with `scripts/04_import_data.py` |
 
 ## 📄 License
 
