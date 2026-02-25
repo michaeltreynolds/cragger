@@ -66,7 +66,6 @@ USING (true);
 -- Create function for similarity search
 CREATE OR REPLACE FUNCTION match_sentences(
   query_embedding vector(1536),
-  match_threshold float DEFAULT 0.7,
   match_count int DEFAULT 20
 )
 RETURNS TABLE (
@@ -87,7 +86,6 @@ AS $$
     sentence_embeddings.text,
     1 - (sentence_embeddings.embedding <=> query_embedding) as similarity
   FROM sentence_embeddings
-  WHERE 1 - (sentence_embeddings.embedding <=> query_embedding) > match_threshold
   ORDER BY sentence_embeddings.embedding <=> query_embedding
   LIMIT match_count;
 $$;

@@ -482,15 +482,20 @@ async function semanticSearch() {
             return;
         }
 
-        // Step 3: Group by talk
-        const topTalks = groupByTalk(results);
-
+        // Step 3: Display results with similarity badges
         let html = '';
-        for (const talk of topTalks) {
+        for (const result of results) {
+            const sim = result.similarity;
+            const badge = similarityBadge(sim);
             html += `<div class="result-card">
-                <div class="result-title">${escapeHtml(talk.title)}</div>
-                <div class="result-speaker">by ${escapeHtml(talk.speaker)}</div>
-                <div class="result-sentences">${escapeHtml(talk.text)}</div>
+                <div class="result-card-header">
+                    <div>
+                        <div class="result-title">${escapeHtml(result.title)}</div>
+                        <div class="result-speaker">by ${escapeHtml(result.speaker)}</div>
+                    </div>
+                    ${badge}
+                </div>
+                <div class="result-sentences">${escapeHtml(result.text)}</div>
             </div>`;
         }
         showResults('semantic', html);
@@ -571,7 +576,6 @@ async function searchSentences(embedding) {
 
     const { data, error } = await supabaseClient.rpc('match_sentences', {
         query_embedding: embedding,
-        match_threshold: 0.6,
         match_count: 20
     });
 
@@ -640,6 +644,20 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Similarity badge with color coding
+function similarityBadge(similarity) {
+    const pct = (similarity * 100).toFixed(0);
+    let cls;
+    if (similarity >= 0.70) {
+        cls = 'similarity-high';
+    } else if (similarity >= 0.40) {
+        cls = 'similarity-mid';
+    } else {
+        cls = 'similarity-low';
+    }
+    return `<span class="similarity-badge ${cls}">${pct}%</span>`;
 }
 
 // ============================================
