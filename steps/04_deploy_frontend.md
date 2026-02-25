@@ -32,12 +32,18 @@ git push
 
 Wait ~1 minute for GitHub Pages to redeploy, then visit your site.
 
-### 3. Configure Auth Redirect URL
+### 3. Configure Auth Redirect URLs
+
+The magic link redirects you back to whatever URL you're running the app from. You need to **whitelist each URL** in Supabase:
 
 1. Go to **Supabase Dashboard** → **Authentication** → **URL Configuration**
-2. Under "Redirect URLs", click **Add URL**
-3. Paste your GitHub Pages URL: `https://YOUR-USERNAME.github.io/conference-rag/`
-4. Click **Save**
+2. Under "Redirect URLs", add **both** of these:
+   - `https://YOUR-USERNAME.github.io/conference-rag/` (deployed site)
+   - `http://localhost:5500/` (if using VS Code Live Server or similar)
+
+> ⚠️ **If you skip this step**, clicking the magic link will redirect to the wrong URL and login will fail. You'll see a "redirect URL not allowed" error.
+>
+> 💡 The app automatically uses `window.location` for the redirect, so it works from any URL you've whitelisted — no code changes needed to switch between localhost and deployed.
 
 ### 4. Test Login
 
@@ -48,6 +54,8 @@ Wait ~1 minute for GitHub Pages to redeploy, then visit your site.
 5. You should be logged in! ✅
 
 **Expected behavior**: You can log in, but all three search modes show **"Not Ready"** — that's correct! They'll light up as you complete the remaining steps.
+
+> ⚠️ **Rate limit warning**: Supabase's free tier limits magic link emails to **3 per hour**. If you stop receiving emails, just wait an hour and try again. Don't spam the "Sign In" button — each click uses one of your 3 attempts! You can also check your spam folder.
 
 > 💡 **Ask your AI assistant**: *"How do magic link logins work? What are the security advantages over passwords?"*
 

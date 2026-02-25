@@ -154,6 +154,7 @@ conference-rag/
 |-------|----------|
 | "Please configure Supabase" | Update `config.js` with your project URL and anon key |
 | Magic link not working | Add your site URL to Supabase → Authentication → URL Configuration |
+| Magic link email not arriving | Free tier allows only **3 per hour** — wait and try again, check spam |
 | Changes don't appear | Hard refresh (Ctrl+Shift+R) or try incognito window |
 | Search shows "Not Ready" | Complete the corresponding step first |
 | "Failed to get embedding" | Deploy Edge Functions and set OPENAI_API_KEY secret |

@@ -57,6 +57,7 @@ Your Question: "How can I find peace during hard times?"
 | "Failed to get embedding" | Check Edge Function deployment (Step 5) and that OPENAI_API_KEY secret is set |
 | No search results | Verify data was imported (check row count in Supabase Dashboard) |
 | Login doesn't work | Check redirect URL in Supabase Auth settings (Step 4) |
+| Magic link email not arriving | Supabase free tier allows only **3 per hour** — wait and try again, also check spam |
 | Changes don't appear | Hard refresh (Ctrl+Shift+R) or try incognito window |
 
 > 💡 **Ask your AI assistant**: *"My RAG search is returning irrelevant results. What factors affect the quality of RAG search results?"*
