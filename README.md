@@ -83,7 +83,6 @@ conference-rag/
 ├── config.public.json          # Supabase URL + anon key (safe to commit)
 ├── config.secret.json          # API keys & secrets (git-ignored)
 ├── config.secret.example.json  # Template for config.secret.json
-├── config.public.example.json  # Template for config.public.json
 ├── requirements.txt            # Python dependencies
 ├── .nojekyll                   # Tells GitHub Pages not to use Jekyll
 ├── steps/                      # Step-by-step assignment guides
@@ -92,9 +91,11 @@ conference-rag/
 │   └── 07_make_it_yours.md
 ├── scripts/                    # Pipeline scripts (run in order)
 │   ├── 01_create_schema.py     # Create DB schema
-│   ├── 02_scrape_data.py       # Scrape conference talks → data/talks.json
+│   ├── 02_scrape_data.py       # Scrape conference talks → scripts/output/talks.json
 │   ├── 03_import_data.py       # Import text to Supabase (🔍 keyword!)
-│   └── 04_embed_and_update.py  # Generate embeddings, update DB (🧠 semantic!)
+│   ├── 04_embed_data.py        # Generate embeddings → scripts/output/ (💰 saved to disk!)
+│   ├── 05_update_embeddings.py # Update DB with embeddings (🧠 semantic!)
+│   └── output/                 # Intermediate data files (git-ignored)
 ├── data/                       # Intermediate data (git-ignored)
 └── supabase/
     └── functions/              # Edge Functions (deployed to Supabase)

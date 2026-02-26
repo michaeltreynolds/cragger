@@ -45,4 +45,4 @@ __pycache__/
 config.secret.json
 
 # Intermediate data outputs
-data/*.json
+scripts/output/

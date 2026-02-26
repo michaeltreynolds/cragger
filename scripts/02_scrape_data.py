@@ -28,7 +28,8 @@ from tqdm import tqdm
 YEARS_TO_SCRAPE = 5
 START_YEAR = 2025 - YEARS_TO_SCRAPE
 END_YEAR = 2025
-OUTPUT_FILE = os.path.join('data', 'talks.json')
+OUTPUT_DIR = os.path.join('scripts', 'output')
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, 'talks.json')
 
 
 def setup_session():
@@ -161,7 +162,7 @@ def main():
         return
 
     # Save to JSON
-    os.makedirs('data', exist_ok=True)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         json.dump(talks_data, f, indent=2, ensure_ascii=False)
 

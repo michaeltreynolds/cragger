@@ -32,7 +32,7 @@ The script:
 1. **Finds conference index pages** for the last 5 years (April + October each year)
 2. **Extracts talk URLs** from each conference page
 3. **Scrapes each talk** in parallel (title, speaker, calling, year, season, URL, full text)
-4. **Saves structured JSON** to `data/talks.json`
+4. **Saves structured JSON** to `scripts/output/talks.json`
 
 ### What the Output Looks Like
 
@@ -70,10 +70,13 @@ python scripts/03_import_data.py
 ```
 
 This script:
-1. Reads `data/talks.json`
+1. Reads `scripts/output/talks.json`
 2. Splits ~400 talks into ~80,000 sentences
 3. Imports all sentences to the `sentence_embeddings` table (**text only** — no embeddings yet)
-4. Verifies the final row count
+4. Saves `scripts/output/sentences.json` locally (for the embedding step)
+5. Verifies the final row count
+
+> 💡 **Check scripts/output/**: After running, look at `scripts/output/talks.json` and `scripts/output/sentences.json` to see the intermediate data. This is what the whole pipeline is processing!
 
 > 💡 **Why no embeddings yet?** We import the text first so you can see keyword search working right away. Embeddings take ~15 minutes to generate and are added in Step 5. This separation lets you experience the difference between keyword search (works now!) and semantic search (next step).
 
@@ -90,8 +93,9 @@ Try searching for `"faith"` or `"temple"` — you should see results!
 ## Verification
 
 - [ ] `02_scrape_data.py` completes and reports scraping ~300-400+ talks
-- [ ] `data/talks.json` exists and contains talk objects
+- [ ] `scripts/output/talks.json` exists and contains talk objects
 - [ ] `03_import_data.py` completes and reports successful import of ~80,000 sentences
+- [ ] `scripts/output/sentences.json` exists with sentence records
 - [ ] Supabase Dashboard → Table Editor → `sentence_embeddings` shows data
 - [ ] On your site: **🔍 Keyword Search** turns green and returns results!
 

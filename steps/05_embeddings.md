@@ -21,18 +21,28 @@ Keyword search is powerful, but it only finds exact matches. Try searching for *
 
 ### Step 5a: Generate Embeddings
 
-Run the embedding script to add vector representations to your database:
+Run the embedding script to generate vector representations and save them to disk:
 
 ```bash
-python scripts/04_embed_and_update.py
+python scripts/04_embed_data.py
 ```
 
 This script:
-1. Finds all sentences in the database without embeddings
+1. Reads `scripts/output/sentences.json`
 2. Calls OpenAI's `text-embedding-3-small` to generate a 1,536-dimensional vector for each sentence
-3. Updates each row with its embedding
+3. Saves results to `scripts/output/sentences_with_embeddings.json`
+4. Supports resuming if interrupted (your progress is saved!)
 
 > ⏱️ **This takes 10-15 minutes** and costs ~$0.60 in OpenAI API usage.
+> 💰 **Your embeddings are safe**: They're saved to disk in `scripts/output/`, so even if the next step fails, you won't pay twice.
+
+### Step 5b: Update Database with Embeddings
+
+```bash
+python scripts/05_update_embeddings.py
+```
+
+This reads the saved embeddings and updates each row in the database.
 
 ### How Embeddings Work
 
@@ -122,7 +132,9 @@ Try searching for *"How can I find peace during hard times?"* — notice how it 
 
 ## Verification
 
-- [ ] `04_embed_and_update.py` completes and reports embeddings generated
+- [ ] `04_embed_data.py` completes and reports embeddings generated
+- [ ] `scripts/output/sentences_with_embeddings.json` exists (your safety net!)
+- [ ] `05_update_embeddings.py` completes and reports rows updated
 - [ ] `supabase --version` shows a version number
 - [ ] `embed-question` function deployed without errors
 - [ ] You can see the function in Supabase Dashboard → Edge Functions

@@ -1,8 +1,9 @@
 """
 Step 3: Import Talk Data to Supabase
 ======================================
-Reads data/talks.json, splits each talk into sentences,
-and imports the text records to Supabase (without embeddings).
+Reads scripts/output/talks.json, splits each talk into sentences,
+imports the text records to Supabase (without embeddings), and
+saves the sentence records locally for the embedding step.
 
 After this step, KEYWORD SEARCH will light up green on your site!
 Embeddings are added in the next step to enable semantic search.
@@ -11,7 +12,10 @@ Usage:
     python scripts/03_import_data.py
 
 Input:
-    data/talks.json  — from Step 2 (scraping)
+    scripts/output/talks.json  — from Step 2 (scraping)
+
+Output:
+    scripts/output/sentences.json  — sentence records with talk_id + sentence_num
 
 Prerequisites:
     - config.public.json with Supabase URL and anon key
@@ -31,7 +35,8 @@ from supabase import create_client
 from tqdm import tqdm
 
 
-INPUT_FILE = os.path.join('data', 'talks.json')
+INPUT_FILE = os.path.join('scripts', 'output', 'talks.json')
+OUTPUT_FILE = os.path.join('scripts', 'output', 'sentences.json')
 BATCH_SIZE = 100
 
 
@@ -87,12 +92,18 @@ def main():
     print(f"✅ Split {len(talks)} talks into {len(sentence_records):,} sentences")
     print(f"   Average: {len(sentence_records) / len(talks):.1f} sentences per talk\n")
 
+    # Save sentences locally (for embedding step to use)
+    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+        json.dump(sentence_records, f, ensure_ascii=False)
+    file_size_mb = os.path.getsize(OUTPUT_FILE) / (1024 * 1024)
+    print(f"💾 Saved {len(sentence_records):,} sentences to {OUTPUT_FILE} ({file_size_mb:.1f} MB)")
+
     # Connect to Supabase
     public_config, secrets = load_config()
     client = create_client(public_config['SUPABASE_URL'], secrets['SUPABASE_SERVICE_KEY'])
 
     # Check for existing data and truncate if needed
-    print("=" * 60)
+    print("\n" + "=" * 60)
     print("Checking for existing data...")
     print("=" * 60)
 
@@ -139,7 +150,7 @@ def main():
 
     print(f"\n🎉 Keyword Search is now ready!")
     print(f"   Refresh your site — the 🔍 Keyword Search panel should turn GREEN.")
-    print(f"\nNext: python scripts/04_embed_and_update.py")
+    print(f"\nNext: python scripts/04_embed_data.py")
 
 
 if __name__ == '__main__':

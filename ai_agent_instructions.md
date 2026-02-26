@@ -105,9 +105,10 @@ conference-rag/
 ├── steps/                            # Step-by-step assignment guides (00-07)
 ├── scripts/                          # Pipeline scripts (run in order)
 │   ├── 01_create_schema.py           # Creates DB schema via Supabase API
-│   ├── 02_scrape_data.py             # Scrapes talks → data/talks.json
+│   ├── 02_scrape_data.py             # Scrapes talks → scripts/output/talks.json
 │   ├── 03_import_data.py             # Imports text to Supabase (keyword search!)
-│   └── 04_embed_and_update.py        # Generates embeddings, updates DB rows
+│   ├── 04_embed_data.py              # Generates embeddings → scripts/output/
+│   └── 05_update_embeddings.py       # Updates DB rows with embeddings
 ├── data/                             # Intermediate output files (git-ignored)
 └── supabase/functions/               # Edge Functions (TypeScript/Deno)
     ├── _shared/                      # Shared auth & CORS modules
