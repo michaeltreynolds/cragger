@@ -46,7 +46,9 @@ Answer these in your submission:
 
 5. **AI-assisted development**: How did your AI coding assistant help you during this assignment? What did it do well? Where did it struggle?
 
-## 🚀 Optional Extensions
+6. **Add a feature to this app**: Add an interesting feature to this app. If you can't think of your own idea, maybe try adding a way to ask question of a specific person rather than a related talk. RAG your answer from that person's recent general coference talks. Be creative! Have fun! Make it yours!
+
+## 🚀 Other Ideas for Extensions
 
 Want to take this further? Try these challenges:
 
