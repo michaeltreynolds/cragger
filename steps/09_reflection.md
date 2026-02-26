@@ -78,3 +78,5 @@ Track popular questions and frequently matched talks. Visualize with Chart.js.
 2. **Live deployment URL** (GitHub Pages)
 3. **Screenshot** of a working RAG query + answer
 4. **Written reflection** answering the questions above
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

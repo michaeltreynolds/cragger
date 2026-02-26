@@ -66,4 +66,6 @@ The magic link redirects you back to whatever URL you're running the app from. Y
 - [ ] Magic link login works (you receive the email and can log in)
 - [ ] All three search modes show "Not Ready" (expected at this point)
 
-→ Next: [Step 05: Deploy Edge Functions](05_edge_functions.md)
+## → Next: [Step 05: Deploy Edge Functions](05_edge_functions.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

@@ -25,9 +25,9 @@ You'll need **six values**. Here's where to find each one:
 |-----------|------------------|---------|
 | `SUPABASE_URL` | Settings → API → Project URL | App + Scripts |
 | `SUPABASE_ANON_KEY` | Settings → API → `anon` `public` key | App + Scripts |
-| `SUPABASE_SERVICE_KEY` | Settings → API → `service_role` key (click "Reveal") | Scripts only (AI agent) |
-| `SUPABASE_PROJECT_REF` | Extract from your URL: `https://XXXXX.supabase.co` → `XXXXX` | Scripts only (AI agent) |
-| `SUPABASE_ACCESS_TOKEN` | [Account Tokens page](https://supabase.com/dashboard/account/tokens) → Generate new token | Scripts only (AI agent) |
+| `SUPABASE_SERVICE_KEY` | Settings → API → `service_role` key (click "Reveal") | Scripts only (AI code assist agent) |
+| `SUPABASE_PROJECT_REF` | Extract from your URL: `https://XXXXX.supabase.co` → `XXXXX` | Scripts only (AI code assist agent) |
+| `SUPABASE_ACCESS_TOKEN` | [Account Tokens page](https://supabase.com/dashboard/account/tokens) → Generate new token | Scripts only (AI code assist agent) |
 | `OPENAI_API_KEY` | [OpenAI API Keys](https://platform.openai.com/api-keys) → Create new secret key | App + Scripts |
 
 ### 3. Fill in `config.secret.json`
@@ -64,4 +64,6 @@ const SUPABASE_CONFIG = {
 - [ ] All six credentials are filled into `config.secret.json`
 - [ ] `config.js` has your URL and anon key
 
-→ Next: [Step 03: Create Database Schema](03_database_schema.md)
+## → Next: [Step 03: Create Database Schema](03_database_schema.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

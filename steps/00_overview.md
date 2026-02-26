@@ -53,7 +53,7 @@ Your finished app will have three search modes that "light up" as you complete e
 - [OpenAI API key](https://platform.openai.com/api-keys) (~$0.60 usage)
 - Python 3.9+ installed locally
 - An AI coding assistant (pick one):
-  - **Antigravity** (VS Code extension)
+  - **Antigravity** (VS Code-based IDE)
   - **GitHub Copilot** (VS Code extension)
   - **Cursor** (standalone IDE)
 
@@ -85,7 +85,7 @@ pip install -r requirements.txt
 
 Install one of these in your code editor:
 
-- **Antigravity** — Install from VS Code Marketplace, sign in
+- **Antigravity** — Download from [antigravity.google](https://antigravity.google), sign in
 - **GitHub Copilot** — Install from VS Code Marketplace, sign in with GitHub
 - **Cursor** — Download from [cursor.com](https://cursor.com)
 
@@ -102,4 +102,6 @@ Install one of these in your code editor:
 
 ⏱️ **~2 hours** total across all steps
 
-Let's get started! → [Step 01: Fork & Setup](01_fork_and_setup.md)
+## Let's get started! → [Step 01: Fork & Setup](01_fork_and_setup.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

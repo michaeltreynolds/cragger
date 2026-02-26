@@ -63,4 +63,6 @@ Take a look at `scripts/02_scrape_data.py`:
 - [ ] Script reports scraping ~300-400+ talks
 - [ ] Spot-check: open `data/talks.json` and verify a few entries have proper titles, speakers, and text
 
-→ Next: [Step 07: Generate Embeddings & Import](07_embed_and_import.md)
+## → Next: [Step 07: Generate Embeddings & Import](07_embed_and_import.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

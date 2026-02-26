@@ -70,4 +70,6 @@ Your Question: "How can I find peace during hard times?"
 - [ ] RAG question returns an AI-generated answer with talk citations
 - [ ] Take a screenshot of a working RAG query — you'll need this for submission!
 
-→ Next: [Step 09: Reflection](09_reflection.md)
+## → Next: [Step 09: Reflection](09_reflection.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

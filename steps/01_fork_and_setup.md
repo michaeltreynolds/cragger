@@ -55,4 +55,6 @@ cp config.secret.example.json config.secret.json
 - [ ] Virtual environment is activated (`(.venv)` appears in your terminal prompt)
 - [ ] `pip install -r requirements.txt` completed without errors
 
-→ Next: [Step 02: Create Supabase Project](02_supabase_project.md)
+## → Next: [Step 02: Create Supabase Project](02_supabase_project.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

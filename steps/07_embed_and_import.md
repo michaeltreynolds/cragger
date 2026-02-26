@@ -75,4 +75,6 @@ This script:
 - [ ] On your site: **🔍 Keyword Search** turns green and returns results
 - [ ] On your site: **🧠 Semantic Search** turns green and returns results
 
-→ Next: [Step 08: Test the System](08_testing.md)
+## → Next: [Step 08: Test the System](08_testing.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

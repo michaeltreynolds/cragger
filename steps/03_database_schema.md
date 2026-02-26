@@ -129,4 +129,6 @@ print(f"sentence_embeddings: {len(result.data)} rows (expected: 0) 🔒")
 - [ ] You can see both `sentence_embeddings` and `page_views` in Supabase Dashboard → Table Editor
 - [ ] (Optional) The RLS test snippet shows `page_views` is readable but `sentence_embeddings` returns 0 rows
 
-→ Next: [Step 04: Deploy Frontend](04_deploy_frontend.md)
+## → Next: [Step 04: Deploy Frontend](04_deploy_frontend.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.

@@ -4,33 +4,15 @@ A Retrieval Augmented Generation (RAG) application that lets users ask questions
 
 **Live Demo**: [https://michaeltreynolds.github.io/cragger/](https://michaeltreynolds.github.io/cragger/)
 
+<p align="center">
+  <img src="example.png" alt="Conference RAG screenshot" width="600">
+  <br>
+  <em>Sample screenshot — semantic search with AI-generated answers</em>
+</p>
+
 ## 🚀 Quick Start
 
-### 1. Fork & Clone
-
-```bash
-# Fork this repo on GitHub, then:
-git clone https://github.com/YOUR-USERNAME/conference-rag.git
-cd conference-rag
-```
-
-### 2. Set Up Python Environment
-
-```bash
-python -m venv .venv
-
-# Activate:
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
-
-pip install -r requirements.txt
-```
-
-### 3. Follow the Step Guides
-
-The `steps/` folder walks you through everything:
+Follow the step-by-step guides in the `steps/` folder:
 
 | Step | Topic | Time |
 |------|-------|------|
@@ -54,13 +36,7 @@ The `steps/` folder walks you through everything:
 
 ## 🤖 AI-Assisted Development
 
-This assignment is designed to be completed with an AI coding assistant. We recommend:
-
-- **[Antigravity](https://marketplace.visualstudio.com/items?itemName=AntimatterResearch.antigravity)** — VS Code extension
-- **[GitHub Copilot](https://github.com/features/copilot)** — VS Code extension  
-- **[Cursor](https://cursor.com)** — Standalone AI-first IDE
-
-Use your assistant to explain concepts, debug errors, and help write code.
+This assignment is designed to be completed with an AI coding assistant (Antigravity, GitHub Copilot, or Cursor). See [Step 00](steps/00_overview.md) for setup instructions.
 
 Your AI assistant will automatically read [`ai_agent_instructions.md`](ai_agent_instructions.md) to understand the assignment's learning objectives and teach you along the way.
 

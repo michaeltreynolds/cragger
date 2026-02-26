@@ -95,4 +95,6 @@ curl -X POST 'https://YOUR_PROJECT_REF.supabase.co/functions/v1/embed-question' 
 - [ ] Both functions deployed without errors
 - [ ] You can see the functions in Supabase Dashboard → Edge Functions
 
-→ Next: [Step 06: Scrape Data](06_scrape_data.md)
+## → Next: [Step 06: Scrape Data](06_scrape_data.md)
+
+> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.
