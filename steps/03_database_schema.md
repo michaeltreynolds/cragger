@@ -1,4 +1,10 @@
-# Step 3: Create Database Schema
+# Step 3: Database Schema — Setting Up for 🔍 Keyword Search
+
+```
+  🏁 LAUNCH ──→ 🔐 SIGN IN ──→ ▶ 🔍 KEYWORD ──→ 🧠 SEMANTIC ──→ 🤖 RAG ──→ 🚀 YOURS
+                                   ~~~~~~~~~~~
+                                   YOU ARE HERE (step 1 of 2)
+```
 
 ## What You'll Learn
 - What pgvector is and why it's useful for AI applications
@@ -7,30 +13,28 @@
 - How database functions (stored procedures) work
 - **The difference between public and protected data access**
 
-## Background
+## Why This Matters
 
-Your database needs:
-1. **pgvector extension** — Adds vector data type and similarity operators to PostgreSQL
-2. **`sentence_embeddings` table** — Stores talk sentences with their embedding vectors (🔒 **auth-only**)
-3. **`page_views` table** — Records every page visit (🌍 **public**)
-4. **RLS policies** — Controls who can access each table
-5. **`match_sentences()` function** — A stored procedure that performs vector similarity search
-
-> 💡 **Ask your AI assistant**: *"What is pgvector and how does cosine similarity search work?"*
+Your database is the foundation for all three search modes. The schema you create here includes the `sentence_embeddings` table (where all your conference talk data will live) and the `match_sentences()` function (which powers semantic search later). Getting this right means everything else builds on a solid base.
 
 ## What to Do
 
-Run the schema creation script:
+### 1. Run the Schema Creation Script
 
 ```bash
 python scripts/01_create_schema.py
 ```
 
-This script creates both tables, their RLS policies, and the search function.
+This script creates:
+- **pgvector extension** — Adds vector data type and similarity operators to PostgreSQL
+- **`sentence_embeddings` table** — Stores talk sentences with their embedding vectors (🔒 **auth-only**)
+- **`page_views` table** — Records every page visit (🌍 **public**)
+- **RLS policies** — Controls who can access each table
+- **`match_sentences()` function** — A stored procedure for vector similarity search
+
+> 💡 **Ask your AI assistant**: *"What is pgvector and how does cosine similarity search work?"*
 
 ### Two Tables, Two Access Levels
-
-The schema creates two tables with **very different** security policies:
 
 | Table | Who can read? | Who can write? | Why? |
 |-------|--------------|----------------|------|
@@ -70,26 +74,24 @@ Here's a starting point:
 from supabase import create_client
 import json
 
-with open('config.secret.json') as f:
-    secrets = json.load(f)
+with open('config.public.json') as f:
+    public = json.load(f)
 
 # Connect with the ANON key (not service key!)
-client = create_client(secrets['SUPABASE_URL'], secrets['SUPABASE_ANON_KEY'])
+client = create_client(public['SUPABASE_URL'], public['SUPABASE_ANON_KEY'])
 
 # This works — page_views has a public SELECT policy
 result = client.table('page_views').select('*').limit(5).execute()
 print(f"page_views: {len(result.data)} rows ✅")
 
 # This returns nothing — sentence_embeddings requires authentication
-# When RLS policy restricts access you get zero results, no error is returned.
-# Why do you think they chose to implement it that way?
 result = client.table('sentence_embeddings').select('*').limit(5).execute()
 print(f"sentence_embeddings: {len(result.data)} rows (expected: 0) 🔒")
 ```
 
-> 💡 **Try it!** Ask your AI assistant to run this snippet for you. Seeing the output first-hand makes the RLS concept click — and your assistant can explain *why* it works this way.
+> 💡 **Try it!** Seeing the output first-hand makes the RLS concept click.
 
-> 🤔 **Think about it**: The anon key is in your client-side JavaScript (`config.js`). Anyone can see it by viewing your page source. So why is your data still safe?
+> 🤔 **Think about it**: The anon key is in your `config.public.json`. Anyone can see it. So why is your data still safe?
 
 ### The Security Model
 
@@ -120,7 +122,7 @@ print(f"sentence_embeddings: {len(result.data)} rows (expected: 0) 🔒")
 └────────────────────────────────────────┘
 ```
 
-**Key insight**: Supabase protects your *database* with RLS, but it can't protect *third-party API keys* like OpenAI. That's why you build Edge Functions — they're the secure intermediary you control.
+**Key insight**: Supabase protects your *database* with RLS, but it can't protect *third-party API keys* like OpenAI. That's why you'll build Edge Functions — they're the secure intermediary you control.
 
 ## Verification
 
@@ -129,6 +131,4 @@ print(f"sentence_embeddings: {len(result.data)} rows (expected: 0) 🔒")
 - [ ] You can see both `sentence_embeddings` and `page_views` in Supabase Dashboard → Table Editor
 - [ ] (Optional) The RLS test snippet shows `page_views` is readable but `sentence_embeddings` returns 0 rows
 
-## → Next: [Step 04: Deploy Frontend](04_deploy_frontend.md)
-
-> 🤖 **AI coding assistant?** Read [ai_agent_instructions.md](../ai_agent_instructions.md) for guidance on helping students with this assignment.
+## → Next: [Step 04: Scrape & Import Data](04_scrape_and_import.md)

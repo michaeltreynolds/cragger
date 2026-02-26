@@ -41,8 +41,7 @@ __pycache__/
 *.pyc
 .venv/
 
-# Secrets
-*.secret.json
+# Secrets (NEVER commit these!)
 config.secret.json
 
 # Intermediate data outputs

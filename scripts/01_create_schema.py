@@ -9,7 +9,8 @@ Usage:
     python scripts/01_create_schema.py
 
 Prerequisites:
-    - config.secret.json with valid Supabase credentials
+    - config.public.json with Supabase URL and anon key
+    - config.secret.json with Supabase service key, access token, and project ref
     - Supabase project created
 """
 
@@ -17,11 +18,13 @@ import json
 import sys
 import time
 
-# Load secrets
+# Load configuration from both config files
+with open('config.public.json', 'r') as f:
+    public_config = json.load(f)
 with open('config.secret.json', 'r') as f:
     secrets = json.load(f)
 
-SUPABASE_URL = secrets['SUPABASE_URL']
+SUPABASE_URL = public_config['SUPABASE_URL']
 SUPABASE_SERVICE_KEY = secrets['SUPABASE_SERVICE_KEY']
 SUPABASE_ACCESS_TOKEN = secrets['SUPABASE_ACCESS_TOKEN']
 SUPABASE_PROJECT_REF = secrets['SUPABASE_PROJECT_REF']

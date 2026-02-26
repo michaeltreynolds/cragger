@@ -9,11 +9,13 @@ function isConfigValid() {
     const isPlaceholderUrl = !SUPABASE_CONFIG.url ||
         SUPABASE_CONFIG.url.includes('YOUR_SUPABASE') ||
         SUPABASE_CONFIG.url.includes('YOUR-PROJECT') ||
-        SUPABASE_CONFIG.url === 'https://your-project-ref.supabase.co';
+        SUPABASE_CONFIG.url === 'https://your-project-ref.supabase.co' ||
+        SUPABASE_CONFIG.url === 'https://YOUR_PROJECT_REF.supabase.co';
 
     const isPlaceholderKey = !SUPABASE_CONFIG.anonKey ||
         SUPABASE_CONFIG.anonKey.includes('YOUR_SUPABASE') ||
         SUPABASE_CONFIG.anonKey.includes('your-anon-key') ||
+        SUPABASE_CONFIG.anonKey === 'YOUR_SUPABASE_ANON_KEY_HERE' ||
         SUPABASE_CONFIG.anonKey.length < 20;
 
     return !isPlaceholderUrl && !isPlaceholderKey;
@@ -21,16 +23,28 @@ function isConfigValid() {
 
 // Initialize Supabase client only if config is valid
 let supabaseClient = null;
-const configIsValid = isConfigValid();
+let configIsValid = false;
+let appInitialized = false;
 
-if (configIsValid) {
-    try {
-        supabaseClient = window.supabase.createClient(
-            SUPABASE_CONFIG.url,
-            SUPABASE_CONFIG.anonKey
-        );
-    } catch (err) {
-        console.error('Failed to initialize Supabase client:', err);
+function initializeSupabase() {
+    configIsValid = isConfigValid();
+    if (configIsValid && !supabaseClient) {
+        try {
+            supabaseClient = window.supabase.createClient(
+                SUPABASE_CONFIG.url,
+                SUPABASE_CONFIG.anonKey
+            );
+            // Listen for auth state changes
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' && session) {
+                    showApp(session.user);
+                } else if (event === 'SIGNED_OUT') {
+                    showLogin();
+                }
+            });
+        } catch (err) {
+            console.error('Failed to initialize Supabase client:', err);
+        }
     }
 }
 
@@ -255,16 +269,7 @@ if (logoutBtn) {
     });
 }
 
-// Listen for auth state changes
-if (supabaseClient) {
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-            showApp(session.user);
-        } else if (event === 'SIGNED_OUT') {
-            showLogin();
-        }
-    });
-}
+// Auth state change listener is now set up inside initializeSupabase()
 
 // ============================================
 // UI STATE MANAGEMENT
@@ -313,16 +318,23 @@ async function checkSearchReadiness() {
     readinessCheckRunning = true;
 
     try {
-        // --- 1 DB query: count rows with embeddings ---
-        // If count > 0 → data exists (keyword ✅) AND embeddings exist (semantic DB prereq ✅)
-        // If count === 0 → pipeline incomplete → all panels not ready
-        const { count, error } = await supabaseClient
+        // --- Check 1: Any data at all? (keyword search just needs text) ---
+        const { count: totalCount, error: totalError } = await supabaseClient
             .from('sentence_embeddings')
-            .select('*', { count: 'exact', head: true })
-            .not('embedding', 'is', null);
+            .select('*', { count: 'exact', head: true });
 
-        const hasEmbeddings = !error && count > 0;
-        setSearchReady('keyword', hasEmbeddings);
+        const hasData = !totalError && totalCount > 0;
+        setSearchReady('keyword', hasData);
+
+        // --- Check 2: Data with embeddings? (semantic search needs vectors) ---
+        let hasEmbeddings = false;
+        if (hasData) {
+            const { count, error } = await supabaseClient
+                .from('sentence_embeddings')
+                .select('*', { count: 'exact', head: true })
+                .not('embedding', 'is', null);
+            hasEmbeddings = !error && count > 0;
+        }
 
         // --- 1 embed-question call (only if DB has embeddings) ---
         let semanticReady = false;
@@ -802,14 +814,26 @@ function recordPageView() {
 // INITIALIZE APP
 // ============================================
 
-// Fetch deploy timestamp
-fetchDeployTimestamp();
+function initializeApp() {
+    if (appInitialized) return;
 
-// Record page view and show counter
-recordPageView();
+    initializeSupabase();
 
-// Run setup checks on page load
-runSetupChecks();
+    // These always run (even without valid config)
+    fetchDeployTimestamp();
+    runSetupChecks();
 
-// Check authentication session
-checkSession();
+    if (supabaseClient) {
+        appInitialized = true;
+        recordPageView();
+        checkSession();
+    }
+}
+
+// Try to initialize immediately (works if config.js has inline values)
+initializeApp();
+
+// Re-initialize when config.public.json finishes loading
+window.addEventListener('config-loaded', () => {
+    initializeApp();
+});

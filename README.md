@@ -79,20 +79,22 @@ conference-rag/
 ├── index.html                  # Main application UI
 ├── app.js                      # Three search modes + auth logic
 ├── styles.css                  # Dark theme styling
-├── config.js                   # Supabase credentials (you edit this)
+├── config.js                   # Loads config.public.json for browser
+├── config.public.json          # Supabase URL + anon key (safe to commit)
 ├── config.secret.json          # API keys & secrets (git-ignored)
 ├── config.secret.example.json  # Template for config.secret.json
+├── config.public.example.json  # Template for config.public.json
 ├── requirements.txt            # Python dependencies
 ├── .nojekyll                   # Tells GitHub Pages not to use Jekyll
 ├── steps/                      # Step-by-step assignment guides
 │   ├── 00_overview.md
 │   ├── ...
-│   └── 09_reflection.md
+│   └── 07_make_it_yours.md
 ├── scripts/                    # Pipeline scripts (run in order)
 │   ├── 01_create_schema.py     # Create DB schema
 │   ├── 02_scrape_data.py       # Scrape conference talks → data/talks.json
-│   ├── 03_embed_data.py        # Generate embeddings → data/sentences_with_embeddings.json
-│   └── 04_import_data.py       # Import to Supabase
+│   ├── 03_import_data.py       # Import text to Supabase (🔍 keyword!)
+│   └── 04_embed_and_update.py  # Generate embeddings, update DB (🧠 semantic!)
 ├── data/                       # Intermediate data (git-ignored)
 └── supabase/
     └── functions/              # Edge Functions (deployed to Supabase)

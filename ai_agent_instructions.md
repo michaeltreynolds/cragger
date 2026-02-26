@@ -99,14 +99,15 @@ These are the core concepts students should understand by the end. When opportun
 ```
 conference-rag/
 ├── index.html, app.js, styles.css   # Frontend (static site)
-├── config.js                         # Supabase credentials (student fills in)
-├── config.secret.json                # API keys (git-ignored)
-├── steps/                            # Step-by-step assignment guides (00-09)
+├── config.js                         # Loads config.public.json for browser
+├── config.public.json                # Supabase URL + anon key (safe to commit)
+├── config.secret.json                # API keys & service keys (git-ignored)
+├── steps/                            # Step-by-step assignment guides (00-07)
 ├── scripts/                          # Pipeline scripts (run in order)
 │   ├── 01_create_schema.py           # Creates DB schema via Supabase API
 │   ├── 02_scrape_data.py             # Scrapes talks → data/talks.json
-│   ├── 03_embed_data.py              # Generates embeddings → data/sentences_with_embeddings.json
-│   └── 04_import_data.py             # Imports to Supabase
+│   ├── 03_import_data.py             # Imports text to Supabase (keyword search!)
+│   └── 04_embed_and_update.py        # Generates embeddings, updates DB rows
 ├── data/                             # Intermediate output files (git-ignored)
 └── supabase/functions/               # Edge Functions (TypeScript/Deno)
     ├── _shared/                      # Shared auth & CORS modules
@@ -144,3 +145,4 @@ When students hit errors, help them debug rather than just giving the fix:
 - Remind them that struggling with hard concepts is how learning works
 - Connect the technical skills to real-world impact: *"Understanding embeddings means you could build search systems that help people find exactly what they need"*
 - The ultimate goal isn't just a working app — it's a student who understands how modern AI applications work and feels confident building more
+- Occassionally, engage with the student and ask how they are understanding what is going on and encourage them to ask questions! Ask them for their thoughts. Remember their responses.
