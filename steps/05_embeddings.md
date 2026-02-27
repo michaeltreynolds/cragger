@@ -77,9 +77,9 @@ Your app needs to call OpenAI's API to embed user questions, but you can't put y
 > 💡 **Ask your AI assistant**: *"How do I install the Supabase CLI on my operating system?"*
 
 Common installation methods:
-- **npm**: `npm install -g supabase`
-- **Homebrew (macOS)**: `brew install supabase/tap/supabase`
-- **Scoop (Windows)**: `scoop bucket add supabase https://github.com/supabase/scoop-bucket.git` then `scoop install supabase`
+- **macOS/Linux**: `brew install supabase/tap/supabase`
+- **Windows (Direct Download)**: Download the latest `supabase_windows_amd64.zip` or `.tar.gz` from the [Supabase Releases page](https://github.com/supabase/cli/releases/latest), extract `supabase.exe`, and place it in a folder included in your system PATH (or run it directly from its folder).
+- **Node.js (Any OS)**: `npm install -g supabase`
 
 Verify: `supabase --version`
 
