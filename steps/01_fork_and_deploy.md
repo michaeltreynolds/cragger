@@ -21,6 +21,7 @@ Before building backend features, you want to **see something**. Deploying first
 
 1. Go to: **https://github.com/byu-cs-452/conference-rag**
 2. Click **"Fork"** in the top right → **"Create fork"**
+   or [click here](https://github.com/byu-cs-452/conference-rag/fork)
 3. Make sure your fork is **public** (required for free GitHub Pages hosting)
 
 You now have your own copy at: `https://github.com/YOUR-USERNAME/conference-rag`
