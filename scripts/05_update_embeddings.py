@@ -116,6 +116,51 @@ def main():
     print(f"\n   Total rows:          {total:,}")
     print(f"   Rows with embeddings: {with_emb:,}")
 
+    # Create HNSW vector index for fast similarity search
+    # Done AFTER bulk import — building an index in one pass is much faster
+    # than maintaining it incrementally during thousands of inserts.
+    print("\n" + "=" * 60)
+    print("Creating vector search index (HNSW)...")
+    print("=" * 60)
+
+    import requests
+
+    index_sql = """
+SET statement_timeout = '300s';
+
+CREATE INDEX IF NOT EXISTS sentence_embeddings_embedding_idx
+ON sentence_embeddings
+USING hnsw (embedding vector_cosine_ops);
+"""
+
+    SUPABASE_ACCESS_TOKEN = secrets['SUPABASE_ACCESS_TOKEN']
+    SUPABASE_PROJECT_REF = secrets['SUPABASE_PROJECT_REF']
+
+    url = f"https://api.supabase.com/v1/projects/{SUPABASE_PROJECT_REF}/database/query"
+    headers = {
+        "Authorization": f"Bearer {SUPABASE_ACCESS_TOKEN}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        resp = requests.post(url, headers=headers, json={"query": index_sql}, timeout=360)
+        if resp.status_code in (200, 201):
+            print("   ✅ HNSW index created — vector searches will be fast!")
+        else:
+            print(f"   ⚠️ Index creation returned status {resp.status_code}")
+            print(f"   {resp.text[:200]}")
+            print("   You can create it manually in the SQL Editor:")
+            print("   SET statement_timeout = '300s';")
+            print("   CREATE INDEX IF NOT EXISTS sentence_embeddings_embedding_idx")
+            print("   ON sentence_embeddings USING hnsw (embedding vector_cosine_ops);")
+    except requests.exceptions.Timeout:
+        print("   ⚠️ Request timed out (index creation may still be in progress).")
+        print("   The index may still be building in the background.")
+        print("   Check with: SELECT indexname FROM pg_indexes WHERE tablename = 'sentence_embeddings';")
+    except Exception as e:
+        print(f"   ⚠️ Could not create index: {e}")
+        print("   You can create it manually in the SQL Editor.")
+
     print(f"\n🎉 Semantic Search is now ready!")
     print(f"   Refresh your site — the 🧠 Semantic Search panel should turn GREEN.")
     print(f"\nNext: Deploy edge functions to light up 🤖 RAG!")

@@ -44,7 +44,9 @@ This script:
 python scripts/05_update_embeddings.py
 ```
 
-This reads the saved embeddings and updates each row in the database.
+This reads the saved embeddings, updates each row in the database, and **creates an HNSW vector index** for fast similarity search. The index is built after the bulk import (rather than before) because building it in one pass is much faster than maintaining it incrementally during thousands of inserts.
+
+> ⏱️ **Index creation may take 1-2 minutes** depending on your dataset size. The script handles this automatically — if it times out, it will print instructions for creating it manually in the SQL Editor.
 
 ### How Embeddings Work
 
@@ -136,7 +138,7 @@ Try searching for *"How can I find peace during hard times?"* — notice how it 
 
 - [ ] `04_embed_data.py` completes and reports embeddings generated
 - [ ] `scripts/output/sentences_with_embeddings.json` exists (your safety net!)
-- [ ] `05_update_embeddings.py` completes and reports rows updated
+- [ ] `05_update_embeddings.py` completes and reports rows updated + HNSW index created
 - [ ] `supabase --version` shows a version number
 - [ ] `embed-question` function deployed without errors
 - [ ] You can see the function in Supabase Dashboard → Edge Functions
