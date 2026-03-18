@@ -134,6 +134,8 @@ After deploying the embed-question function:
 
 Try searching for *"How can I find peace during hard times?"* — notice how it finds relevant talks even without those exact keywords!
 
+> 🐰 **Try this comparison**: Search for *"bunnies"* in **Keyword Search** — you'll find just one talk that literally mentions bunnies. Now search *"bunnies"* in **Semantic Search** — you'll also find talks about Easter, rabbits, and related topics. That's the power of understanding meaning vs. matching words!
+
 ## Verification
 
 - [ ] `04_embed_data.py` completes and reports embeddings generated
